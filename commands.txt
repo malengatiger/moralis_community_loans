@@ -1,0 +1,9 @@
+lsof -i tcp:3000 
+kill -9 <PID>
+
+/Users/aubs/Downloads/frp_0.39.0_darwin_amd64/frpc
+./frpc -c frpc.ini
+
+npm install -g moralis-admin-cli
+
+moralis-admin-cli watch-cloud-folder --moralisApiKey n0umoOqXgBv7VPe --moralisApiSecret Qnevmc8vaDdDQ2h --moralisSubdomain ke2da8ozegzq.usemoralis.com --autoSave 1 --moralisCloudfolder /cloud
