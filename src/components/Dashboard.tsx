@@ -59,7 +59,10 @@ export function Dashboard(props: IDashboardProps) {
         `🍎 🍎 🍎 readCloudFunction returned from Moralis: 🎽 ${users.length} users 🎽`
       );
     }
-    const transactions = await Moralis.Cloud.run("transactions");
+    // const transactions = await Moralis.Cloud.run("transactions", {
+    //   from_address_string: "0xa38814294ca92566f76773265fd15655153e58e7",
+    // });
+     const transactions = await Moralis.Cloud.run("transactions");
     console.log(transactions);
     if (transactions.length === 0) {
       console.log(
@@ -78,6 +81,7 @@ export function Dashboard(props: IDashboardProps) {
     await getEthTransactions();
     await getEthBalance();
     await readCloudFunctions();
+    await getEthBalance();
   }
   async function sendEth() {
     // sending 0.5 ETH

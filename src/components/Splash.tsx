@@ -30,7 +30,7 @@ export function Splash(props: ISplashProps) {
   }
 
   async function auth() {
-    console.log("🍏 🍏 Moralis.enableWeb3() ....");
+    console.log("..........🍏 🍏 Moralis.enableWeb3() ....");
     await Moralis.enableWeb3();
     console.log("🍏 🍏 Moralis.enableWeb3() completed");
     await Moralis.authenticate({ signingMessage: "Log in using Moralis" })
