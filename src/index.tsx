@@ -3,6 +3,8 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import { MetaMaskProvider } from "metamask-react";
+
 
 console.log(`index.js; 🈂️  🈂️  🈂️ app starting .............`);
 const APP_ID = process.env.REACT_APP_MORALIS_APPLICATION_ID;
@@ -20,9 +22,11 @@ console.log(`Application: 🌀🌀🌀 isServerInfo: ${isServerInfo}`);
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <MetaMaskProvider>
+      <App />
+    </MetaMaskProvider>
   </React.StrictMode>,
-  document.getElementById('root')
+  document.getElementById("root")
 );
 
 // If you want to start measuring performance in your app, pass a function

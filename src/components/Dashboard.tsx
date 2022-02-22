@@ -1,6 +1,9 @@
 import * as React from "react";
 import Moralis from "moralis";
 import Button from "@mui/material/Button";
+import { useMetaMask } from "metamask-react";
+import { connect } from "tls";
+// import Web3 from "web3";
 
 export interface IDashboardProps {
   user: Moralis.User;
@@ -8,27 +11,13 @@ export interface IDashboardProps {
 let transactions = 0;
 export function Dashboard(props: IDashboardProps) {
   console.log(
-    `🍎 🍎 🍎 Dashboard starting with user: ${JSON.stringify(props.user)}`
+    `\n\n\n🍎 🍎 🍎 Dashboard starting with user:  🍎 ${JSON.stringify(
+      props.user
+    )}  🍎`
   );
-  console.log(props.user);
-  console.log(`🍎 Get data for user from database ....`);
+  const { status, connect, account, chainId, ethereum } = useMetaMask();
 
-  // async function getUsers() {
-  //   console.log(`🍎 Getting users from Moralis ....`);
-  //    const query = new Moralis.Query("User");
-  //    const results = await query.find({ useMasterKey: true });
-  //   console.log(
-  //     `🔆  🔆  🔆 Successfully retrieved:  🔆  ${results.length} users  🔆 `
-  //   );
-  //   console.log(results);
-  //   for (const x of results) {
-  //     console.log(
-  //       `💙 💙 💙 💙  MORALIS USER: ${x.get("username")} address: ${x.get(
-  //         "ethAddress"
-  //       )} 💙 `
-  //     );
-  //   }
-  // }
+  console.log(`🍎 Initialization complete. UI to be set up`);
 
   async function getEthBalance() {
     console.log(`🍎 Getting ethBalance from Moralis ....`);
@@ -62,7 +51,7 @@ export function Dashboard(props: IDashboardProps) {
     // const transactions = await Moralis.Cloud.run("transactions", {
     //   from_address_string: "0xa38814294ca92566f76773265fd15655153e58e7",
     // });
-     const transactions = await Moralis.Cloud.run("transactions");
+    const transactions = await Moralis.Cloud.run("transactions");
     console.log(transactions);
     if (transactions.length === 0) {
       console.log(
@@ -101,11 +90,19 @@ export function Dashboard(props: IDashboardProps) {
       console.log(`🔵 🔵 🔵 🔵  Ether sent or have we fucked up?`);
       console.log(result);
     } catch (e) {
-      console.error(`🔴 🔴 🔴 🔴 🔴 🔴 Sending eth failed! ${JSON.stringify(e)}`);
+      console.error(
+        `🔴 🔴 🔴 🔴 🔴 🔴 Sending eth failed! ${JSON.stringify(e)}`
+      );
       console.log(`🔵 🔵 🔵 About to authenticate via MetaMask .....`);
-      await Moralis.authenticate();
-      console.log(`🔵 🔵 🔵 Authenticate via MetaMask completed! Yeah!`);
-      sendEth();
+
+      try {
+        await Moralis.authenticate();
+        console.log(`🔵 🔵 🔵 Authenticate via MetaMask completed! Yeah!`);
+        sendEth();
+      } catch (e) {
+        console.error(`Unable to authenticate with MetaMask`);
+        throw new Error("Unable to authenticate with MetaMask");
+      }
     }
   }
   async function getEthTransactions() {
@@ -120,7 +117,45 @@ export function Dashboard(props: IDashboardProps) {
     );
     console.log(results);
   }
+  async function startMetaMask() {
+    console.log(`Dashboard: 🍏 🍏 🍏 🍏 startMetaMask .... status: ${status}`);
 
+    // const eth = window.ethereum;
+    if (ethereum) {
+      console.log("Dashboard: 🍏 🍏 🍏 🍏 ethereum is cool!");
+      console.log(ethereum);
+      try {
+        const accts = await ethereum.request({
+          method: "eth_requestAccounts",
+          params: [],
+        });
+        console.log(accts);
+        const bal = await ethereum.request({
+          method: "eth_getBalance",
+          params: [],
+        });
+        console.log(bal);
+        // const output = Buffer.from(bal, "hex");
+        // console.log(`output balance: ${output}`)
+      } catch (e) {
+        console.log(`etereum request fell down!!!`);
+        console.log(e);
+      }
+    } else {
+      console.log("Dashboard: 🔴 🔴  ethereum is NULL ....");
+    }
+
+    // window.web3 = new Web3(window.ethereum);
+    // await window.ethereum.enable();
+  }
+  function hex2a(hexx: String): String {
+    var hex = hexx.toString(); //force conversion
+    var str = "";
+    for (var i = 0; i < hex.length; i += 2)
+      str += String.fromCharCode(parseInt(hex.substr(i, 2), 16));
+    console.log(str);
+    return str;
+  }
   return (
     <div style={{ marginTop: 180 }}>
       <h1>Dashboard Screen </h1>
@@ -140,7 +175,18 @@ export function Dashboard(props: IDashboardProps) {
       >
         Execute Test Functions
       </Button>
-      
+      <Button
+        style={{ marginLeft: 12 }}
+        variant="contained"
+        onClick={async () => {
+          console.log(
+            "\n\n🔖 Wallet Button Clicked! -  🍑 🍑 🍑 .... Change Wallet Account ..."
+          );
+          await startMetaMask();
+        }}
+      >
+        Change Wallet Account
+      </Button>
     </div>
   );
 }
