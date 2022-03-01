@@ -3,33 +3,20 @@ import React from 'react';
 import './App.css';
 import { Splash } from './components/Splash';
 import { useMetaMask } from "metamask-react";
+import LandingPage from './components/LandingPage';
 
 function App() {
   //Moralis.User.
   console.log(
-    "\n\n\n  💙  💙  💙  💙  💙 React App starting ...  💙  💙  💙  💙  💙 "
+    "\n\n\n💙  💙  💙  💙  💙 React App starting ...  💙  💙  💙  💙  💙 "
   );
   const { status, connect, account, chainId, ethereum } = useMetaMask();
 
-  if (status === "initializing")
-    return <div>Synchronisation with MetaMask ongoing...</div>;
-
-  if (status === "unavailable") return <div>MetaMask not available :(</div>;
-
-  if (status === "notConnected")
-    return <button onClick={connect}>Connect to MetaMask</button>;
-
-  if (status === "connecting") return <div>Connecting...</div>;
-
-  if (status === "connected")
-    return (
-      <div className="App">
-        <Splash />
-      </div>
-    );
+  console.log(`💙  💙  💙  💙  💙 App Account: ${account}`);
+ 
   return (
-    <div className="App">
-      <Splash />
+    <div>
+      <LandingPage />
     </div>
   );
 }

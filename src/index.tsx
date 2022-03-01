@@ -1,10 +1,22 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import React from "react";
+import ReactDOM from "react-dom";
+import App from "./App";
+import reportWebVitals from "./reportWebVitals";
 import { MetaMaskProvider } from "metamask-react";
+import { red, purple, teal } from "@mui/material/colors";
+import { ThemeProvider, createTheme } from "@mui/material/styles";
+import { MoralisProvider } from "react-moralis";
 
+const theme = createTheme({
+  palette: {
+    primary: {
+      main: teal[500],
+    },
+    secondary: {
+      main: purple[300],
+    },
+  },
+});
 
 console.log(`index.js; 🈂️  🈂️  🈂️ app starting .............`);
 const APP_ID = process.env.REACT_APP_MORALIS_APPLICATION_ID;
@@ -22,9 +34,13 @@ console.log(`Application: 🌀🌀🌀 isServerInfo: ${isServerInfo}`);
 
 ReactDOM.render(
   <React.StrictMode>
-    <MetaMaskProvider>
-      <App />
-    </MetaMaskProvider>
+    <ThemeProvider theme={theme}>
+      <MoralisProvider appId={APP_ID} serverUrl={SERVER_URL}>
+        <MetaMaskProvider>
+          <App />
+        </MetaMaskProvider>
+      </MoralisProvider>
+    </ThemeProvider>
   </React.StrictMode>,
   document.getElementById("root")
 );

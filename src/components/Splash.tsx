@@ -2,13 +2,16 @@ import * as React from "react";
 import Moralis from "moralis";
 // import Button from "@mui/material/Button";
 import { Dashboard } from "./Dashboard";
+import { useMetaMask } from "metamask-react";
 
 export interface ISplashProps {}
 
 let user;
 export function Splash(props: ISplashProps) {
   console.log("Splash starting ... should check whether user is logged in");
+  const { status, connect, account, chainId, ethereum } = useMetaMask();
 
+  checkWallet();
   start();
 
   user = Moralis.User.current();
@@ -18,6 +21,39 @@ export function Splash(props: ISplashProps) {
       `User is null, 🍏 🍏 will try to authenticate with MetaMask ...`
     );
     auth();
+  } else {
+    console.log(`💦 💦 💦 User has not changed`);
+    //  if (user.attributes.ethAaccounts[0] === account ) {
+    //     console.log(`💦 💦 💦 User has not changed`);
+    //  } else {
+    //    console.log(`🖐🏽 🖐🏽 🖐🏽 User HAS changed, what now?`);
+    //    auth();
+    //  }
+  }
+
+  async function checkWallet() {
+    console.log(`ChainId: 👽 ${chainId} 👽`);
+    console.log(`Account: 👽 ${account} 👽`);
+    console.log(`MetaMask Status: 👽 ${status} 👽`);
+
+    if (status === "initializing")
+      console.log("Synchronisation with MetaMask ongoing...");
+
+    if (status === "unavailable") {
+      console.log(" MetaMask not available...");
+      return <div>MetaMask not available :(</div>;
+    }
+
+    if (status === "notConnected") {
+      console.log(" MetaMask not connected...");
+    }
+
+    if (status === "connecting") {
+      console.log(" MetaMask connecting...");
+    }
+
+    if (status === "connected")
+      console.log("🌿 🌿 🌿 MetaMask is connected...");
   }
 
   async function start() {
@@ -43,7 +79,9 @@ export function Splash(props: ISplashProps) {
   async function auth() {
     console.log("🍏 🍏 🍏 🍏  call Moralis.authenticate() ....");
 
-    await Moralis.authenticate({ signingMessage: "Log in using Community Bank" })
+    await Moralis.authenticate({
+      signingMessage: "Log in using Community Bank",
+    })
       .then(function (user) {
         console.log("🍎 logged in user:", JSON.stringify(user));
         console.log(`🍎 Address: ${user.get("ethAddress")} `);
@@ -67,7 +105,8 @@ export function Splash(props: ISplashProps) {
       (loginRecord: { id: string }) => {
         // Execute any logic that should take place after the object is saved.
         console.log(
-          "🥦 🥦 🥦  LoginRecord written to Moralis DB, objectId: " + loginRecord.id
+          "🥦 🥦 🥦  LoginRecord written to Moralis DB, objectId: " +
+            loginRecord.id
         );
       },
       (error: { message: string }) => {
